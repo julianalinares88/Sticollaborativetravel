@@ -8,9 +8,9 @@ export function Navbar({ onLogin }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <span className="text-white font-bold text-lg">V</span>
+            <span className="text-white font-bold text-lg">T</span>
           </div>
-          <span className="font-semibold text-lg text-foreground">Viajemos</span>
+          <span className="font-semibold text-lg text-foreground">TripMatch</span>
         </div>
 
         <div className="flex items-center gap-3">

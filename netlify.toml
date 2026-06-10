@@ -1,0 +1,12 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Fallback SPA: cualquier ruta sirve index.html (React Router se encarga del resto).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

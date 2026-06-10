@@ -1,33 +1,32 @@
-import { useState } from "react";
 import { Heart } from "lucide-react";
 
-const preferences = [
-  { emoji: "🌴", label: "Playa" },
-  { emoji: "⛰️", label: "Montaña" },
-  { emoji: "🌿", label: "Naturaleza" },
-  { emoji: "🪂", label: "Aventura" },
-  { emoji: "🧘", label: "Descanso" },
-  { emoji: "🌃", label: "Vida nocturna" },
-  { emoji: "🏛️", label: "Cultura" },
-  { emoji: "🍲", label: "Gastronomía" },
-  { emoji: "🛍️", label: "Compras" },
-  { emoji: "📸", label: "Instagrammable" },
-  { emoji: "☀️", label: "Clima cálido" },
-  { emoji: "💸", label: "Económico" },
-  { emoji: "✈️", label: "Fácil acceso" },
-  { emoji: "👥", label: "Bueno para amigos" },
-  { emoji: "🎓", label: "Bueno para universitarios" },
-  { emoji: "💕", label: "Plan romántico" },
-  { emoji: "🥾", label: "Actividad física" },
-];
+// Los 17 features con su clave real en la tabla user_preferences.
+export const PREFERENCE_ITEMS = [
+  { key: "beach", emoji: "🌴", label: "Playa" },
+  { key: "mountain", emoji: "⛰️", label: "Montaña" },
+  { key: "nature", emoji: "🌿", label: "Naturaleza" },
+  { key: "adventure", emoji: "🪂", label: "Aventura" },
+  { key: "relax", emoji: "🧘", label: "Descanso" },
+  { key: "nightlife", emoji: "🌃", label: "Vida nocturna" },
+  { key: "culture", emoji: "🏛️", label: "Cultura" },
+  { key: "gastronomy", emoji: "🍲", label: "Gastronomía" },
+  { key: "shopping", emoji: "🛍️", label: "Compras" },
+  { key: "instagrammable", emoji: "📸", label: "Instagrammable" },
+  { key: "warm_weather", emoji: "☀️", label: "Clima cálido" },
+  { key: "budget_friendly", emoji: "💸", label: "Económico" },
+  { key: "accessibility", emoji: "✈️", label: "Fácil acceso" },
+  { key: "friend_group_friendly", emoji: "👥", label: "Bueno para amigos" },
+  { key: "university_trip_friendly", emoji: "🎓", label: "Bueno para universitarios" },
+  { key: "couple_friendly", emoji: "💕", label: "Plan romántico" },
+  { key: "physically_demanding", emoji: "🥾", label: "Actividad física" },
+] as const;
 
-export function PreferencesSection() {
-  const [ratings, setRatings] = useState<Record<string, number>>({});
+interface PreferencesSectionProps {
+  ratings: Record<string, number>;
+  onRate: (key: string, rating: number) => void;
+}
 
-  const handleRating = (label: string, rating: number) => {
-    setRatings((prev) => ({ ...prev, [label]: rating }));
-  };
-
+export function PreferencesSection({ ratings, onRate }: PreferencesSectionProps) {
   return (
     <div className="space-y-8">
       <div className="text-center space-y-3">
@@ -46,19 +45,19 @@ export function PreferencesSection() {
         <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
           <span className="flex items-center gap-2">
             <span className="text-lg">😴</span>
-            Meh
+            Poco importante
           </span>
           <span className="flex items-center gap-2">
-            Me encanta
+            Muy importante
             <span className="text-lg">🤩</span>
           </span>
         </div>
       </div>
 
       <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-        {preferences.map((pref) => (
+        {PREFERENCE_ITEMS.map((pref) => (
           <div
-            key={pref.label}
+            key={pref.key}
             className="bg-white rounded-2xl p-4 border border-border hover:border-primary/30 transition-all"
           >
             <div className="flex items-center justify-between mb-3">
@@ -66,9 +65,9 @@ export function PreferencesSection() {
                 <span className="text-3xl">{pref.emoji}</span>
                 <span className="font-semibold text-foreground">{pref.label}</span>
               </div>
-              {ratings[pref.label] && (
+              {ratings[pref.key] && (
                 <div className="text-sm text-muted-foreground">
-                  {ratings[pref.label]}/5
+                  {ratings[pref.key]}/5
                 </div>
               )}
             </div>
@@ -77,25 +76,26 @@ export function PreferencesSection() {
               {[1, 2, 3, 4, 5].map((rating) => (
                 <button
                   key={rating}
-                  onClick={() => handleRating(pref.label, rating)}
+                  type="button"
+                  onClick={() => onRate(pref.key, rating)}
                   className={`flex-1 h-10 rounded-xl transition-all ${
-                    ratings[pref.label] >= rating
+                    ratings[pref.key] >= rating
                       ? "bg-gradient-to-r from-primary to-accent shadow-md transform scale-105"
                       : "bg-muted hover:bg-primary/10"
                   }`}
                 >
                   <span
                     className={`text-lg ${
-                      ratings[pref.label] >= rating ? "scale-125" : ""
+                      ratings[pref.key] >= rating ? "scale-125" : ""
                     } transition-transform inline-block`}
                   >
-                    {ratings[pref.label] >= rating ? "⭐" : "☆"}
+                    {ratings[pref.key] >= rating ? "⭐" : "☆"}
                   </span>
                 </button>
               ))}
             </div>
 
-            {pref.label === "Actividad física" && (
+            {pref.key === "physically_demanding" && (
               <div className="mt-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-3 border border-green-200">
                 <div className="text-xs text-muted-foreground text-center">
                   <span className="font-semibold">1 = </span>

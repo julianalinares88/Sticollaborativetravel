@@ -1,33 +1,43 @@
-import { useState } from "react";
-import { Dashboard } from "./components/Dashboard";
-import { Navbar } from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { HowItWorks } from "./components/HowItWorks";
-import { TravelCategories } from "./components/TravelCategories";
-import { Auth } from "./components/Auth";
+import React from "react";
+import { RouterProvider } from "react-router-dom";
+import { AuthProvider } from "./hooks/useAuth";
+import { router } from "./router";
+
+class ErrorBoundary extends React.Component<any, { error: Error | null }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: any) {
+    console.error("Unhandled render error:", error, info);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="min-h-screen flex items-center justify-center p-8">
+          <div className="max-w-2xl bg-white rounded-xl shadow-lg p-6 border">
+            <h2 className="text-xl font-bold mb-2">Se produjo un error</h2>
+            <pre className="text-sm whitespace-pre-wrap">{String(this.state.error.stack ?? this.state.error.message)}</pre>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<"landing" | "auth" | "dashboard">("dashboard");
-
-  if (currentView === "auth") {
-    return (
-      <Auth
-        onAuthSuccess={() => setCurrentView("dashboard")}
-        onBack={() => setCurrentView("landing")}
-      />
-    );
-  }
-
-  if (currentView === "dashboard") {
-    return <Dashboard onLogout={() => setCurrentView("landing")} />;
-  }
-
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar onLogin={() => setCurrentView("auth")} />
-      <Hero onGetStarted={() => setCurrentView("auth")} />
-      <HowItWorks />
-      <TravelCategories />
-    </div>
+    <AuthProvider>
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
+    </AuthProvider>
   );
 }

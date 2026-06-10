@@ -8,7 +8,9 @@ interface GroupCardProps {
   totalMembers: number;
   respondedMembers: number;
   status: "pending" | "waiting" | "ready";
+  hasResults?: boolean;
   onCompletePreferences?: () => void;
+  onOpen?: () => void;
 }
 
 const statusConfig = {
@@ -27,6 +29,13 @@ const statusConfig = {
     buttonStyle: "bg-white border-2 border-border text-foreground hover:bg-muted",
   },
   ready: {
+    label: "Listo para recomendar",
+    color: "bg-accent/20 text-accent-foreground border-accent/50",
+    icon: Sparkles,
+    buttonText: "Ver grupo",
+    buttonStyle: "bg-white border-2 border-border text-foreground hover:bg-muted",
+  },
+  results: {
     label: "Resultados disponibles",
     color: "bg-green-100 text-green-700 border-green-300",
     icon: Sparkles,
@@ -42,15 +51,18 @@ export function GroupCard({
   totalMembers,
   respondedMembers,
   status,
+  hasResults,
   onCompletePreferences,
+  onOpen,
 }: GroupCardProps) {
-  const config = statusConfig[status];
+  const effective = status === "ready" && hasResults ? "results" : status;
+  const config = statusConfig[effective];
   const Icon = config.icon;
   const progress = (respondedMembers / totalMembers) * 100;
 
   return (
     <div className="group bg-white rounded-3xl overflow-hidden border border-border hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onOpen}>
         <ImageWithFallback
           src={coverImage}
           alt={name}
@@ -106,7 +118,7 @@ export function GroupCard({
         </div>
 
         <button
-          onClick={status === "pending" ? onCompletePreferences : undefined}
+          onClick={status === "pending" ? onCompletePreferences : onOpen}
           className={`w-full py-3 rounded-2xl transition-all flex items-center justify-center gap-2 group/btn ${config.buttonStyle}`}
         >
           {config.buttonText}
